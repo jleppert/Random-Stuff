@@ -1,0 +1,9 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =7
+let g:netrw_dirhist_1='/home/nate/etc/nginx/vhost'
+let g:netrw_dirhist_2='/usr/share/dict'
+let g:netrw_dirhist_3='/home/johnathan/app/core/prototype'
+let g:netrw_dirhist_4='/home/johnathan/app/core/lib/vendor/socket.io/lib/client'
+let g:netrw_dirhist_5='/home/johnathan/app/html5/www/js'
+let g:netrw_dirhist_6='/etc/network'
+let g:netrw_dirhist_7='/etc'

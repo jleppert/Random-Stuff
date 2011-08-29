@@ -1,38 +1,21 @@
 # .bashrc
+#
+# basic non-threatening rc file made by me.  Everything in here I did myself
+# and probably should have known better.
 
-#PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-# User specific aliases and functions
+# $Author: johnathanl $
+# $Date: 2009-06-03 17:43:17 -0400 (Wed, 03 Jun 2009) $
+# $Revision: 73 $
 
-function PWD {
-tmp=${PWD%/*/*};
-[ ${#tmp} -gt 0 -a "$tmp" != "$PWD" ] && echo ${PWD:${#tmp}+1} || echo $PWD;
-}
-
-export PS1="\[\033[0;32m\]\u@\h \[\033[33m\]\$(PWD 3)\[\033[0m\] \$ ";
-
-# Source global definitions
+# Source global definitions -- do this first cause we overwrite some defaults
 if [ -f /etc/bashrc ]; then
-    . /etc/bashrc
+	. /etc/bashrc
 fi
 
-export HISTSIZE=5000
-export HISTFILESIZE=5000
-export HISTCONTROL=ignoredups
-
-shopt -s checkwinsize
-
-export TERM='xterm-256color'
-export LANG='en_US.UTF-8'
-eval "`dircolors -b`"
-alias ls='ls --color=auto'
-alias mysqlc="mysql --defaults-file=~/.mysql_info.conf"
-alias mysqlf="mysql --defaults-file=~/.mysql_info_foresight.conf"
-alias cd..="cd .." #work around a common typo
-alias e="vi"
 
 # Aliases I just can't live without
 ulimit -c 10000000
-alias ls='ls -haXF --color=auto'
+alias ls='gls -haXF --color=auto'
 alias grep='grep --color=tty'
 alias egrep='egrep --color=tty'
 alias cd..='cd ..'
@@ -42,7 +25,7 @@ alias v='vim -R -'
 alias vi='vim'
 alias psa='ps axf'
 alias psA='ps -Af'
-alias ps-='ps -Af |grep ^tylerl'
+alias ps-='ps -Af |grep ^jleppert'
 alias du='du -h'
 alias df='df -h'
 alias l='less'
@@ -51,41 +34,54 @@ alias ll='ls -l'
 alias cd.='cd `pwd -LP`'
 alias su-='su -'
 alias e="vi"
+alias mysql="/usr/local/mysql/bin/mysql"
 
-alias branches="cd /nfshome/leppert.5/devel/websites/"
-alias trunk="cd /nfshome/leppert.5/devel/ccms_trunk; cvs up -d"
-alias vhost="cd /nfshome/leppert.5/my_apache/vhost.d"
-alias tailer="tail -f /nfshome/leppert.5/var/log/httpd/error_log"
-alias tester="perl -I /nfshome/leppert.5/devel/ccms_trunk_test/lib /nfshome/leppert.5/devel/ccms_trunk_test/cgi-bin/test.pl"
-alias etester="vi /nfshome/leppert.5/devel/ccms_trunk_test/cgi-bin/test.pl" 
+cd() {
+  if [ -n "$1" ]; then
+    builtin cd "$@" && ls
+  else
+    builtin cd ~ && ls
+  fi
+}
 
-alias cp='cp -i -v' # prompt before overwriting files
+
+# NOTE: it's a good idea to have these aliases below, but do not depend
+# on them (i.e. don't do "rm *" with the intention of answering no to the
+# files you don't want to delete) because you may end up
+# a terminal that doesn't delete/copy in interactive mode, and you could
+# unintentionally delete/clobber vital files.
+
+alias cp='cp -i -v'	# prompt before overwriting files
 alias rm='rm -i'  # prompt before deleting files
-alias cvsstatus="cvs up -d 2> /dev/null"
 
 export HISTSIZE=100000
 export HISTFILESIZE=100000
 export HISTCONTROL=ignoreboth
 
+if [ -z "$JAVA_HOME" ] ; then 
+	J_H="/usr/lib/jvm/jre"
+	[ -d "$J_H" ] && export JAVA_HOME="$J_H"
+fi
+
 # Colors
 ##############################
-LGRAY="\\033[1;30m"
-LRED="\\033[1;31m"
-LGREEN="\\033[1;32m"
-LYELLOW="\\033[1;33m"
-LBLUE="\\033[1;34m"
-LPURPLE="\\033[1;35m"
-LCYAN="\\033[1;36m"
-LWHITE="\\033[1;37m"
-DGRAY="\\033[0;30m"
-DRED="\\033[0;31m"
-DGREEN="\\033[0;32m"
-DYELLOW="\\033[0;33m"
-DBLUE="\\033[0;34m"
-DPURPLE="\\033[0;35m"
-DCYAN="\\033[0;36m"
-DWHITE="\\033[0;37m"
-NOCOLOR="\\033[0m"
+   LGRAY="\\033[1;30m"
+    LRED="\\033[1;31m"
+  LGREEN="\\033[1;32m"
+ LYELLOW="\\033[1;33m"
+   LBLUE="\\033[1;34m"
+ LPURPLE="\\033[1;35m"
+   LCYAN="\\033[1;36m"
+  LWHITE="\\033[1;37m"
+   DGRAY="\\033[0;30m"
+    DRED="\\033[0;31m"
+  DGREEN="\\033[0;32m"
+ DYELLOW="\\033[0;33m"
+   DBLUE="\\033[0;34m"
+ DPURPLE="\\033[0;35m"
+   DCYAN="\\033[0;36m"
+  DWHITE="\\033[0;37m"
+ NOCOLOR="\\033[0m"
 
 PS_LGRAY="\[${LGRAY}\]"
 PS_LRED="\[${LRED}\]"
@@ -108,11 +104,30 @@ PS_NOCOLOR="\[${NOCOLOR}\]"
 #############################
 # color the working directory
 if [ $UID == 0 ]; then
-    export PS1="[${PS_LRED}\u${PS_NOCOLOR}@${PS_LYELLOW}\H${PS_LBLUE} \W${PS_NOCOLOR}]\$ "
+	export PS1="[${PS_LRED}\u${PS_NOCOLOR}@${PS_LYELLOW}\H${PS_LBLUE} \W${PS_NOCOLOR}]\$ "
 else
-    export PS1="[${PS_LGREEN}\u${PS_NOCOLOR}@${PS_LYELLOW}\H${PS_LBLUE} \W${PS_NOCOLOR}]\$ "
+	export PS1="[${PS_LGREEN}\u${PS_NOCOLOR}@${PS_LYELLOW}\H${PS_LBLUE} \W${PS_NOCOLOR}]\$ "
 fi
 
+# do not overwrite files on > redirection
+set -o noclobber
+# update window size to fix wrapping
+shopt -s checkwinsize
+
+# default to my home directory, but also execute files in .
+PATH="$PATH:/sbin:/usr/sbin:/usr/local/sbin:./:$HOME/bin"
+[ -d $HOME/src/tools ] && PATH="$PATH:$HOME/src/tools"
+export PATH
+
+# lets hear it for vim!
+export EDITOR="vim"
+
+[ -z "$LANG" ] && export LANG="en_US.UTF8"
+
+#_____________________ COLORS __________________________________________
+
+# standard LS_COLORS defaults (more or less)
+# These define colors for meta-file types, archives, and multimedia
 LS_COLORS="no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:do=01;35\
 :bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31\
 :*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31\
@@ -121,6 +136,26 @@ LS_COLORS="no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:do=01;35\
 :*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35\
 :*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35\
 :*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35"
+
+# color the html files yellow, core files white on red, java/class files yellow
+# and rcs version files dark gray
+
+# Color settings as follows:
+
+# text files: orange
+# html htm doc txt css conf README
+
+# source files: yellow
+# shtml java c cc cpp php pl h inc pm py
+
+# files that don't belong: white on red
+# core dead.letter
+
+# binaries (non-executable): dark green
+# class o so exe (mono bins)
+
+# files to ignore (backups, etc): dark gray
+# ,v (rcs version files), .bak, *~
 
 LS_COLORS="$LS_COLORS\
 :*.html=00;33:*.htm=00;33:*.doc=00;33:*.txt=00;33:*.css=00;33\
@@ -133,64 +168,76 @@ LS_COLORS="$LS_COLORS\
 
 export LS_COLORS
 
-# lets hear it for vim!
-export EDITOR="vim"
-
-[ -z "$LANG" ] && export LANG="en_US.UTF8"
-
-cd() {
-  if [ -n "$1" ]; then
-    builtin cd "$@" && ls
-  else
-    builtin cd ~ && ls
-  fi
-}
-
-d () {
-  # see http://troy.yort.com/short-fast-micro-whois
-  result=`dig -t NS "$1" | grep -c "ANSWER SECTION"`
-  if [ "$result" = "0" ]; then
-    # some registered domains have no NS resource record in root servers; may
-    # be false negative, so confirm with whois
-    result=`whois -n "$1" | grep -c "Registrar: "`
-  fi
-echo $result
-  return $result
-}
+# ---------------------------------------------------------
 
 localtime() {
-        perl -e "print scalar localtime $1";
-            echo;
+	perl -e "print scalar localtime $1";
+	echo;
 }
 
 gmtime() {
-        perl -e "print scalar gmtime $1";
-            echo;
+	perl -e "print scalar gmtime $1";
+	echo;
 }
 
 pyhelp() {
-        echo "import $1;help($1)" | python | less
+	echo "import $1;help($1)" | python | less
 }
 
 b64e() { perl -e 'use MIME::Base64 qw(encode_base64);$/=undef;print encode_base64(<>);'; }
 b64d() { perl -e 'use MIME::Base64 qw(decode_base64);$/=undef;print decode_base64(<>);'; }
 
 pack() {
-        gzip -c $* | b64e
+	gzip -c $* | b64e
 }
 
 unpack() {
-        b64d | gunzip
+	b64d | gunzip
 }
 
 packf() {
-        tar -cf - $* | gzip | b64e
+	tar -cf - $* | gzip | b64e
 }
 
 unpackf() {
-        b64d | tar -zxf -
+	b64d | tar -zxf - 
+}
+
+mydumpall() {
+	for DB in `echo show databases | mysql -B --skip-column-names $*`; do
+		echo $DB; mysqldump $DB $* > $DB.sql
+	done
 }
 
 passgen() {
-        GET 'http://tltech.com/password/?short=1'
+	GET 'http://tltech.com/password/?short=1'
 }
+
+if [ -e .bashrc_local ] ; then
+	. .bashrc_local
+fi
+
+# rvm
+[[ -s "/Users/jleppert/.rvm/scripts/rvm" ]] && source "/Users/jleppert/.rvm/scripts/rvm" 
+
+# fix for mysql: see http://stackoverflow.com/questions/4512362/rails-server-fails-to-start-with-mysql2-using-rvm-ruby-1-9-2-p0-on-osx-10-6-5
+export DYLD_LIBRARY_PATH="/usr/local/mysql/lib:$DYLD_LIBRARY_PATH"
+
+export TERM=xterm-color
+export CLICOLOR=TRUE
+export LSCOLORS=Gxfxbxdxcxegedabagacad
+
+## amazon ec2
+export EC2_PRIVATE_KEY=$HOME/aws-keys/x509/pk-AZE62UBE5JRVSEN47RYF3VPMWSR7TTAW.pem
+export EC2_CERT=$HOME/aws-keys/x509/cert-AZE62UBE5JRVSEN47RYF3VPMWSR7TTAW.pem
+
+# JAVA env
+export JAVA_HOME=/Library/Java/Home
+
+# Maven options
+export MAVEN_OPTS="-Xmx750m -XX:PermSize=256m"
+export tellapal="/Users/jleppert/devel/etc/tellapal.properties"
+export TELLAPAL="/Users/jleppert/devel/etc/tellapal.properties"
+
+export tellapal_properties="/Users/jleppert/devel/etc/tellapal.properties"
+export THOR_SCHEDULER_PROPERTIES="/Users/jleppert/devel/etc/Opus1/thor_scheduler.properties"
