@@ -47,7 +47,7 @@ echo
 fi 
 echo -e "${LBLUE}Welcome to: ${LRED}$HOSTNAME${LBLUE}"
 [ -r /etc/redhat-release ] && cat /etc/redhat-release
-uname -s -r -m -p -i
+uname -s -r -m -p
 echo -en "$LGREEN"
 uptime 
 
@@ -77,3 +77,8 @@ PERL5LIB=${PERL5LIB:+$PERL5LIB:}$HOME/lib/perl5:/nfshome/leppert.5/nfshome/leppe
 fi
 MANPATH=${MANPATH:+$MANPATH:}$HOME/share/man
 export MANPATH PERL5LIB
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+source ~/.bashrc
+source ~/.git-prompt.sh
+cd ~/devel

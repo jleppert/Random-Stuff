@@ -12,8 +12,8 @@ set noscrollbind
 set ruler
 set mouse=a
 set smartindent
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 set expandtab
 set ignorecase 
 set smartcase

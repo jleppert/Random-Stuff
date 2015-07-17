@@ -15,16 +15,11 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
-export HISTSIZE=5000
-export HISTFILESIZE=5000
-export HISTCONTROL=ignoredups
-
-shopt -s checkwinsize
-
 export TERM='xterm-256color'
 export LANG='en_US.UTF-8'
-eval "`dircolors -b`"
-alias ls='ls --color=auto'
+#eval "`dircolors -b`"
+export CLICOLOR=YES
+alias ls='ls --color=auto -G'
 alias mysqlc="mysql --defaults-file=~/.mysql_info.conf"
 alias mysqlf="mysql --defaults-file=~/.mysql_info_foresight.conf"
 alias cd..="cd .." #work around a common typo
@@ -32,7 +27,7 @@ alias e="vi"
 
 # Aliases I just can't live without
 ulimit -c 10000000
-alias ls='ls -haXF --color=auto'
+alias ls='gls -haXF --color=auto'
 alias grep='grep --color=tty'
 alias egrep='egrep --color=tty'
 alias cd..='cd ..'
@@ -42,7 +37,7 @@ alias v='vim -R -'
 alias vi='vim'
 alias psa='ps axf'
 alias psA='ps -Af'
-alias ps-='ps -Af |grep ^tylerl'
+alias ps-='ps -Af |grep ^johnathan'
 alias du='du -h'
 alias df='df -h'
 alias l='less'
@@ -62,10 +57,6 @@ alias etester="vi /nfshome/leppert.5/devel/ccms_trunk_test/cgi-bin/test.pl"
 alias cp='cp -i -v' # prompt before overwriting files
 alias rm='rm -i'  # prompt before deleting files
 alias cvsstatus="cvs up -d 2> /dev/null"
-
-export HISTSIZE=100000
-export HISTFILESIZE=100000
-export HISTCONTROL=ignoreboth
 
 # Colors
 ##############################
@@ -110,7 +101,8 @@ PS_NOCOLOR="\[${NOCOLOR}\]"
 if [ $UID == 0 ]; then
     export PS1="[${PS_LRED}\u${PS_NOCOLOR}@${PS_LYELLOW}\H${PS_LBLUE} \W${PS_NOCOLOR}]\$ "
 else
-    export PS1="[${PS_LGREEN}\u${PS_NOCOLOR}@${PS_LYELLOW}\H${PS_LBLUE} \W${PS_NOCOLOR}]\$ "
+    export PS1="[${PS_LRED}\]\[${PS_LBLUE}\]\u\[${PS_LYELLOW}\]\[${PS_LYELLOW}\]\w\[\033[m\]\[${PS_DPURPLE}\]\$(__git_ps1)\[${PS_NOCOLOR}\]]${PS_LWHITE}\]\$ \[${PS_NOCOLOR}"
+    #export PS1="[${PS_LGREEN}\u${PS_NOCOLOR}@${PS_LYELLOW}\H${PS_LBLUE} \W${PS_NOCOLOR}]\$ "
 fi
 
 LS_COLORS="no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:do=01;35\
@@ -132,7 +124,8 @@ LS_COLORS="$LS_COLORS\
 :*,v=01;30:*.bak=01;30:*~=01;30"
 
 export LS_COLORS
-
+LSCOLORS="$LS_COLORS"
+export LSCOLORS
 # lets hear it for vim!
 export EDITOR="vim"
 
@@ -194,3 +187,8 @@ unpackf() {
 passgen() {
         GET 'http://tltech.com/password/?short=1'
 }
+
+export PATH="$(brew --prefix coreutils)/libexec/gnubin:/usr/local/bin:$PATH"
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+eval $(dircolors -b $HOME/.dircolors)
